@@ -109,7 +109,7 @@ void ConnectionPool::produceConnectionTask()
 		while (!_connectionQue.empty())
 		{
 			_cv.wait(lock);//释放锁给消费者。
-		
+		}
 			//连接数量没有达到上线。继续创建新的连接
 			if (_connectionCnt < _maxSize)
 			{
@@ -121,7 +121,7 @@ void ConnectionPool::produceConnectionTask()
 				_connectionCnt++;//系统启动时候，没有线程安全问题，只有一个线程
 			}
 		_cv.notify_all();
-		}
+		
 	}
 
 }
@@ -135,8 +135,6 @@ void ConnectionPool::scannerConnectionTask()
 		//扫描队列
 		while (_connectionCnt > _initSize)
 		{
-			cout << "collect  connection" << endl;
-
 
 			Connection* p = _connectionQue.front();
 			if (p->getAliveTime() >= (_maxIdleTime * 1000))

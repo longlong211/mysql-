@@ -15,10 +15,10 @@ int main()
 //conn.update(sql);
 
 	clock_t begin = clock();
-	/*thread t1([]() {*/
+	thread t1([]() {
 		ConnectionPool* cp = ConnectionPool::getConnectionPool();
 
-		for (int i = 0; i < 500; ++i)
+		for (int i = 0; i < 250; ++i)
 		{
 			char sql[1024] = { 0 };
 			sprintf_s(sql, "insert into user(name,age,sex) values('%s','%d','%s')",
@@ -29,38 +29,40 @@ int main()
 
 
 
-		}
-	//thread t2([]() {
-	//	ConnectionPool* cp = ConnectionPool::getConnectionPool();
+		}});
+	thread t2([]() {
+		ConnectionPool* cp = ConnectionPool::getConnectionPool();
 
-	//	for (int i = 0; i < 500; ++i)
-	//	{
-	//		char sql[1024] = { 0 };
-	//		sprintf_s(sql, "insert into user(name,age,sex) values('%s','%d','%s')",
-	//			"longzhu", 80, "male");
-	//		//sp->connect("127.0.0.1", 3306, "root", "123456", "chat");
-	//		shared_ptr<Connection> sp = cp->getConnection();
+		for (int i = 0; i < 250; ++i)
+		{
+			char sql[1024] = { 0 };
+			sprintf_s(sql, "insert into user(name,age,sex) values('%s','%d','%s')",
+				"longzhu", 80, "male");
+			//sp->connect("127.0.0.1", 3306, "root", "123456", "chat");
+			shared_ptr<Connection> sp = cp->getConnection();
 
-	//		sp->update(sql);
+			sp->update(sql);
 
-	//	}});
-	//thread t3([]() {
-	//	ConnectionPool* cp = ConnectionPool::getConnectionPool();
+		}});
+	thread t3([]() {
+		ConnectionPool* cp = ConnectionPool::getConnectionPool();
 
-	//	for (int i = 0; i < 500; ++i)
-	//	{
-	//		
-	//		char sql[1024] = { 0 };
-	//		sprintf_s(sql, "insert into user(name,age,sex) values('%s','%d','%s')",
-	//			"longzhu", 80, "male");
-	//		//sp->connect("127.0.0.1", 3306, "root", "123456", "chat");
-	//		shared_ptr<Connection> sp = cp->getConnection();
+		for (int i = 0; i < 500; ++i)
+		{
+			
+			char sql[1024] = { 0 };
+			sprintf_s(sql, "insert into user(name,age,sex) values('%s','%d','%s')",
+				"longzhu", 80, "male");
+			//sp->connect("127.0.0.1", 3306, "root", "123456", "chat");
+			shared_ptr<Connection> sp = cp->getConnection();
 
-	//		sp->update(sql);
+			sp->update(sql);
 
-	//	}});
+		}});
 	
-	//t1.join();
+	t1.join();
+	t2.join();
+	t3.join();
 	clock_t end = clock();
 	cout << (end - begin) << "ms" << endl;
 
